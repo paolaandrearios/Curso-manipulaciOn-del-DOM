@@ -1,0 +1,786 @@
+<!-- 
+
+	Workshops del curso
+
+  https://github.com/jonalvarezz/platzi-dom
+
+******************************************
+  INFO SOBRE JAVASCRIPT:
+  https://es.javascript.info/
+
+  Alternativamente a descargar node directamente, puedes instalar NVM (Node Version Manager), que te permite instalar múltiples versiones de Node e intercambiar entre ellas cuando quieras con un simple comando, muy útil cuando algunos paquetes no funcionan bien en X versión
+
+https://github.com/nvm-sh/nvm LINUX
+https://github.com/coreybutler/nvm-windows WINDOWS
+
+**********************************
+<h4>Ideas/conceptos claves</h4>
+Critical Rendering Path Es el proceso que se encarga de convertir en pixeles el HTML, CSS y JS
+
+El DOM arbol para el HTML que contiene toda nuestra estructura HTML
+
+El CSSOM es el arbol para el CSS
+
+<h4>Apuntes</h4>
+Todos los navegadores los utilizan para trabajar en un sitio web
+Todo comienza con el proceso llamado “Critical Rendering Path”
+Se puede dividir en 5 partes
+A lo largo del proceso el navegador crea dos arboles
+DOM
+Es una representación del HTML
+Estructura en forma de árbol de nodos
+Es un modelo que puede ser modificado
+CSSOM
+
+************************************
+Web APIs modernas
+
+Resumen de la Clase 👌👌
+Web Apis Modernas
+
+Una WEB API nos permite conectar el DOM con Javascript para que nosotros podamos (leerlo y modificarlo), actualmente existen mas de 70 web APIS y el DOM solo es una de ellas
+
+Pero existen algunas de ella para hacer:
+
+Animaciones
+Drag & Drog
+Manejar de Archivos
+Trasmisión de video con web RTC
+Manejo de videojuegos como ser con OpenGL
+Incluso para manejo de pagos, sin necesidad de contar con librerías o servicios externos.
+Recursos que debemos tener en cuenta al momento de usar APIS
+
+¿Como lo uso? → developer mozilla org
+
+Podremos encontrar bastante información sobre Frontend cuando la necesitamos
+
+¿Puedo usarlo? → caniuse
+
+También tenemos que tener en cuenta que la API que vayamos a usar este soportada por los navegadores, entonces caniuse podrá ayudarnos a saber sobre la compatibilidad que hay.
+
+Chrome tiene compatibilidad con la mayoría de APIS y también de las mas recientes.
+
+----------------------
+¿Qué rayos son las API?
+
+una API es todo lo que sirva para comunicar fácilmente un pedazo de software con otro.
+
+APIs de terceros
+Twitter, por ejemplo, nos proporciona una manera sencilla de mostrar tweets de algún usuario a través de su API. Tan solo tenemos que hacer una petición GET al siguiente Endpoint:
+
+GET https://api.twitter.com/2/users/:id/tweets
+
+APIs de servicios
+Si quisieramos mostrar mapas de Google Maps, tambien podriamos hacerlo a través de su API.
+
+Por ejemplo, para mostrar la ubicación de Sydney, New South Wales, Australia, lo haríamos de la siguiente manera:
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: -34.397, lng: 150.644 },
+    zoom: 8,
+  });
+}
+Conclusión
+Si prestamos atención, nos damos cuenta de que son una manera sencilla de acceder a información o funcionalidades de otro pedazo de código. Es por eso que se les llama ‘’intermediarios’’ o ‘’puentes’’.
+
+
+*********************************
+
+LEER NODOS
+
+Para leer nodos usaremos:
+
+parent.getElementById(‘id’) → Nos permite obtener un elemento a través de su id.
+parent.getElementsByClassName(‘class’) → Obtiene un array con todos los elementos hijos que tengan esa clase, ojo “getElementByClassName” (sin la “s”) no existe, es decir no podremos obtener solo 1 elemento con esa clase.
+parent.getElementsByTagName(‘div’) → Con este método obtenemos una lista o “array list” con todos los elementos que tengan esa etiqueta, ejemplo todos los divs. Al igual que con el método anterior no hay posibilidad de usarlo en singular, siempre tendremos que usar getElements
+Existen Otros 2 mas poderosos que los usan la industria 👀 :
+
+parent.querySelector() → Nos permite buscar de 3 formas: con id, clase o tagName.
+
+A diferencia de los 3 anteriores este nos devuelve 1 solo elemento, el primero que contenga el valor que se le paso asi hayan mas, solo devolverá 1 siempre.
+
+Id → (’#id’)
+class → (’.class’) // aquí si lleva el punto a diferencia de los 3 anteriores formas de leer los nodos.
+tagName → (‘div’)
+parent.querySelectorAll() → Este método retorna un nodelist con todos los elementos que tengan ese selector (id, class o tagName)
+
+Casi siempre el elemento “padre o parent” es igual a document. Ya que estamos haciendo referencia a todo el DOM, todo el documento y esto en ciertos casos nos permite evitar errores.
+Ejemplo: const button = document.querySelector(’#button)
+
+Resumen: En la gran mayoría de aplicaciones, query.selector y query.selectorAll son los selectores usados por al industria y nos darán mayor flexibilidad y el mayo beneficio cuando se manipula el DOM.
+
+*************************************
+NodeLists vs Array
+
+Diferencias entre NodeList y Array
+
+Un NodeList puede parecer mucho a un Array, pero la realidad es que son dos estructuras completamente distintas. Por un lado NodeList es una colección de nodos del DOM, extraidos del HTML y un Array es un tipo de dato especial en Javascript, donde podemos almacenar cualquier tipo de dato. Ambos tienen similitudes, como acceder a la longitud, a traves de length, acceder a los elementos a traves de su indice usando [indice]. Ahora, hay que aclara que en un NodeList no tenemos disponibles los principales metodos de Array que nos facilitan la vida, como map(), filter(), reduce(), some(). Un dato curioso y super interesante del NodeList es que es una especie de coleccion en vivo, ¿y que quiere decir esto? Que si se agrega o se elimina algun elemento del DOM los cambios son aplicados inmediatamente y de forma automatica al NodeList.
+
+Es recomendable transformar los NodeList a Array, pues la mayoria de los motores de Javascript estan optimizados para trabajar con Arrays, en especial el motor V8 de google. Ahora veamos dos formas de transformar un NodeList en un array
+
+// Forma 1: Spread Operator
+const inputs = document.querySelectorAll("input");
+const inputsArray = [...inputs];
+
+// Usando la clase Array y su método from
+const inputs = document.querySelectorAll("input");
+const inputsArray = Array.from(inputs)
+
+****************************************************
+CREAR Y AGREGAR
+
+
+Al decir “crear nodos” nos referimos a crear elementos dentro de nuestro DOM. Para ello podemos hacer uso de:
+.
+
+createElement: Para crear una etiqueta HTML:
+// Solo se ha creado, aún no se agrega al DOM
+const etiquetaH1 = document.createElement("h1")
+createTextNode: Para crear un texto:
+// Solo se ha creado, aún no se agrega al DOM
+const texto = document.createTextNode("¡Hola, Mundo!")
+Como solo creamos, necesitamos formas de agregarlos al DOM, para ello, JavaScript nos provee de estas formas:
+.
+
+parentElement.appendChild(): Agrega un hijo al final algún elemento
+// Obtengo el elemento padre
+const parentElement = document.querySelector("selector")
+// Creo el nodo a insertar
+const h3 = document.createElement("h3")
+// Creo el texto del nodo
+const texto = document.createTextNode("Hola!")
+// Inserto el texto al nodo
+h3.appendChild(texto)
+// Inserto el nodo al padre
+parentElement.appendChild(h3)
+
+parentElement.append(): Es la evolución de appendChild, podemos agregar más de un nodo, puedes agregar texto y… no es soportado por Internet Explorer ¬¬!
+.
+Un polyfill es una adaptación del código para dar soporte a navegadores que no lo soportan, aquí está el polyfill de append:
+https://developer.mozilla.org/es/docs/Web/API/ParentNode/append#polyfill
+// Obtengo el elemento padre
+const parentElement = document.querySelector("selector")
+// Agrego al elemento padre
+parentElement.append("agrego un texto", document.createElement("div"))
+parentElement.insertBefore(): Inserta nodos antes del elemento que le pasemos como referencia, este nodo de referencia tiene que ser un hijo DIRECTO del padre
+// Obtengo el elemento padre
+const parentElement = document.querySelector("selector")
+// Creo un elemento
+const titulo = document.createElement("h1")
+// Obtengo la referencia del elemento del que quiero insertar antes:
+const referencia = document.querySelector("selector")
+// ¡Lo insertamos!
+parentElement.insertBefore(titulo, referencia)
+parentElement.insertAdjacentElement(): Inserta nodos según las opciones que le pasemos:
+beforebegin: Lo inserta antes del nodo
+afterbegin: Lo inserta despues del nodo
+beforeend: Lo inserta antes de donde finaliza el nodo
+afterend: Lo inserta después de donde finaliza el nodo
+// Obtengo el elemento padre
+const parentElement = document.querySelector("selector")
+// Creo un elemento
+const nodo = document.createElement("span")
+parentElement.insertAdjacentElement("beforebegin", nodo)
+
+******************************
+OTRAS FORMAS DE AGREGAR Y LEER NODOS
+
+Los ataques XSS son un tipo de inyección en la cual un atacante logra ejecutar código en los navegadores de los usuarios que acceden a un sitio web legítimo
+
+<h4>Apuntes</h4>
+Existen otras formas de leer y agregar nodos que son muchas convenientes usando cadenas de texto
+node.outerHTML (leer)
+Nos dejar leer el HTML como una cadena del nodo seleccionado
+node.innerHTML (escribir)
+Nos deja modificar el contenido del nodo
+La desventaja es que convierte el texto en HTML pudiendo crear inyecciones de XSS
+Debido a que convierte todo el texto en HTML, habiendo la posibilidad de que se pueda inyectar códigos de terceros
+Si es que fuera muy necesario usar estos métodos y el usuario necesitara ingresar los datos, se debe hacer si o si un proceso de sanitize (Limpieza)
+RESUMEN: Existe otras formas de leer y escribir el HTML, pero tienen un riesgo de ataques XSS, no es mala siempre y cuando se tenga un cuidado con las posibilidades del usuario
+
+
+hack: Cuando en el inspector de elementos seleccionas un elemento y en la consola escribes $0, este te devolverá el elemento tal como si lo hubieses seleccionado con document.querySelector().
+.
+Aquí les dejo el playground que usó el profesor para hacer las pruebas:
+https://codepen.io/jonalvarezz/pen/OJXeNab?editors=0110
+.
+
+*********************************
+
+ATRIBUTOS Y PROPIEDADES
+
+Básicamente un atributo es el estado inicial en nuestro HTML, es HTML solo podemos escribir atributos porque es el estado inicial con el que se renderizan y una propiedad es la variable que podemos cambiar a lo largo de la ejecución del programa mediante JavaScript, es decir, podemos acceder a dichos atributos y cambiarlo, haciendo que sean propiedades, aquí un poco más de información sobre ello.
+.
+Lo genial de JavaScript es que podemos cambiarlas de forma dinámica. Recordemos que JavaScript son en su mayoría objetos, por lo que los nodos HTML dentro de JavaScript son representados como objetos. Teniendo eso en cuenta, podemos acceder a cualquier atributo de dichos nodos desde HTML y cambiar sis propiedades, por ejemplo:
+
+// Al seleccionar el nodo HTML, JavaScript lo convierte en un objeto!
+const input = document.querySelector("input")
+
+// Y of course, podemos modificarlo como cualquier otro objeto de JavaScript:
+input.placeholder = "Escribe algo"
+input.value = 2
+input.type = "number"
+
+
+
+Atributos
+En nuestro documento le podemos asignar atributos a cada elemento del DOM, ¿Pero que son los atributos? son valores adicionales que agregamos a las etiquetas para configurar o ajustar su comportamiento de muchas formas, con el fin de cumplir con los criterios que requieren los usuarios.
+
+Con javascript podemos acceder a esos atributos definidos en el HTML, veamos un ejemplo de como podemos hacer esto, supongamos que tenemos un input que recibe el nombre completo de una persona
+
+// Nuestro input
+<input class="form-control" 
+       id="persona-nombre" 
+       placeholder="Nombre completo" />
+
+// Obtenemos el input
+const input = document.querySelector("#persona-nombre");
+
+// Obtenemos los atributos
+input.className // salida: "form-control"
+input.id // salida: "persona-nombre"
+input.placeholder // salida: "Nombre completo"
+Como vimos podemos acceder a cada atributo como lo hacemos cuando queremos obtener una propiedad en un objeto de javascript, con esto podemos verificar que valor esta tomando cada atributo. Si en el input escribimos texto desde el navegador, podemos acceder a ese valor a traves de input.value.
+
+Javascript cuenta ademas con otras metodos que permiten manipular los atributos de los nodos, estos son element.setAttribute(), element.getAttribute() y element.removeAttribute(). Veamos como funciona cada uno
+
+element.setAttribute()
+
+Este método establece el valor de un atributo en el elemento indicado, recibe dos argumentos, el primero de ellos un string donde se indica el nombre del atributo, y el segundo el valor que tomará dicho atributo. Es importante mencionar que si el atributo ya existe en el elemento, el valor será actualizado. supongamos que al input del ejemplo anterior queremos agregarle el atributo name, lo hacemos de la siguiente manera
+
+input.setAttribute("name", "fullName");
+
+// Ahora el input quedará de la siguiente manera
+
+<input class="form-control" 
+       id="persona-nombre" 
+       placeholder="Nombre completo" 
+			 name="fullName" />
+element.getAttribute()
+
+Este método retorna el valor del atributo especificado en el elemento. Si el atributo al que se hace referencia no esta definido en el elemento, el valor que retornará dicho método es null. Supongamos que queremos obtener el valor del atributo name agregado en el ejemplo anterior.
+
+input.getAttribute("name"); // Salida: "fullName"
+element.removeAttribute()
+
+Este método elimina el atributo del elemento que lo invoca, con esto podemos quitar atributos que ya no necesitemos, supongamos que queremos eliminar el atributo name del input de los ejemplos anteriores, lo hacemos de la siguiente forma
+
+input.removeAttribute("name");
+
+// input final
+<input class="form-control" 
+       id="persona-nombre" 
+       placeholder="Nombre completo" />
+*********************************
+ELIMINAR NODOS
+
+/* 
+    Eliminar Nodos
+
+Asi como podemos crear, agregarlos y modificar
+tambien podremos eliminar nuestros nodos.
+
+-> parentElement.removeChild
+
+-> document.remove
+
+-> document.replaceChild //remplazar nodo
+
+*/
+
+// Selecciono el elemento que quiero eliminar
+
+const nodoAEliminar = document.querySelector("id")
+
+// Selecciono al padre directo
+
+const padre = document.querySelector("class")
+
+/* Eliminamos el elemento pasandole por parametro
+   lo que queremos eliminar al metodo removeChild() 
+*/
+
+padre.removeChild(nodoAEliminar)
+
+/* Tambien podremos eliminarlo de otro forma 
+con la propiedad parentElement que hace referencia
+al padre del elemento que queremos eliminar */
+
+const padre2 = nodoAEliminar.parentElement;
+
+padre2.removeChild(nodoAEliminar);
+
+
+/*
+   node.remove  
+
+ ->Es la evolución de removeChild
+
+ -> No soportado IE
+
+ Remove no nos pedira ningun padre ni tampoco ninguna referencia
+
+ Solo necesitamos seleccionar el elemento que queremos eliminar
+ y utilizar el metodo .remove() y se eliminara
+
+*/
+const elementoEliminar = document.querySelector("div");
+
+elementoEliminar.remove();
+
+/* 
+    node.replaceChild
+
+    para utilizar replace child necesitamos el padre
+    el elemento a remplazar y el elemento de referencia
+
+*/
+
+//seleccionamos el elemento padre
+const elementoPadre = document.querySelector('idContenedor');
+
+//selecionamos la referencia del elemento que queremos remplazar
+
+const elementoRemplazo = document.querySelector('idQuevamosARemplazar');
+
+//creamos el elemento nuevo por el cual vamos a remplazar al otro
+
+const elementoNuevo = document.createElement('h1');
+
+//agregamos texto al elemento nuevo
+elementoNuevo.textContent = "Form Checkout";
+
+/* Utilizamos el metodo .replaceChild  que recibe por parametro
+  el elemento nuevo y el segundo el elemento por el cual lo vamos
+  a remplazar*/
+elementoPadre.replaceChild(elementoNuevo,elementoRemplazo);
+
+*********************************
+OPERACIONES EN LOTE
+
+¿Qué es el Spread Operator?
+Si te causa duda esto, no te preocupes, aquí te lo explico:
+
+El spread operator trabaja con arreglos y objetos, cuando lo pasamos en la llamada a una función, lo que hará es deconstruir ese arreglo y lo pasará como parámetros individuales para la función… aquí un ejemplo para que me entiendas:
+
+function funcionQueRecibeTresParametros(param1, param2, param3) {
+	// code...
+}
+
+// La forma normal de llamarla sería:
+funcionQueRecibeTresParametros(1, 2, 3)
+
+// Pero, ¿qué pasa si tengo un arreglo que contiene esos 3 parámetros?
+const arregloDeParametros = [1, 2, 3]
+
+// Bueno, pues el spread operator puede deconstruir ese arreglo y poner cada elemento en donde irían mis parámetros :D!
+funcionQueRecibeTresParametros(...arregloDeParametros)
+
+// Eso sería equivalente a esto:
+funcionQueRecibeTresParametros(arregloDeParametros[0], arregloDeParametros[1], arregloDeParametros[2])
+Esto es muy útil cuando tenemos demasiados valores, recuerda, mientras menos modifiques el DOM, más eficiente será tu programa, y recordemos que tenemos a append() que nos permite insertar múltiples elementos en el DOM en una sola llamada, ¡aprovechémoslo!
+.
+Dato curioso:
+.
+En algunos frameworks de JavaScript como Vue, existe una cosa llamada el Virtual DOM, no es más que un objeto JavaScript que simula al DOM real, al menos en Vue, esto tiene un proxy que está observando por cambios en ese Virtual DOM para reaccionar y renderizar solo una pequeña parte en el DOM
+
+********************************
+DESCARGANDO INFORMACIÓN Y CREANDO NODOS
+
+//URL API
+ const url = "https://platzi-avo.vercel.app/api/avo";
+
+
+ /*Web API Fetch
+ 
+ La utilizamos para traer recursos desde cualquier otro sitio web
+
+ Lo unico que tenemos que pasarle es nuestra url
+ 
+ 1. Nos conectaremos al servidor
+
+ */
+
+window
+    .fetch(url)
+/*2. Procesar la respuesta y despues la convertimos en JSON
+    Fetch es algo que nos devuelve una promesa asi que
+    trabajaremos con promesas para obtener la respuesta
+    y transformarla en JSON
+
+*/
+    .then(respuesta => respuesta.json())
+
+ /*3.
+ Luego de que convirtamos la respuesta en JSON lo que obtenemos
+ ahora es informacion y la obtenemos concatenando otra promesa
+
+ 
+ Cuando tengamos el JSON  tendremos esa informacion que
+ nos servira para renderizar esa info en nuestro navegador*/
+    .then(responseJson =>{
+
+        const todosLosItems = [];
+        /*recorremos cada uno de los elementos que estan en arrays
+        con un forEach
+        
+        */
+
+        responseJson.data.forEach(item => {
+        /*atraves del parametro de la funcion del forEach accedemos
+        a los elementos de la respuesta json*/
+
+    //creamos nuestros elementos
+        const imagen = document.createElement('img');
+    
+        const titulo = document.createElement('h2');
+       
+        const precio = document.createElement('div');
+      
+    // cremos el contenedor donde vamos a poner nuestros elementos
+
+        const container = document.createElement('div');
+
+    /*agregamos los elementos a un contenedor
+    
+        container.appendChild(imagen);
+        container.appendChild(titulo);
+        container.appendChild(precio);
+    
+    */
+
+        container.append(imagen,titulo,precio);
+        
+    //agregamos el contenedor en nuestro body
+        //document.body.appendChild(container);
+        todosLosItems.push(container);
+        
+            console.log(item.name);
+            
+        });
+
+        document.body.append(...todosLosItems)
+
+    });
+
+/*RESUMEN: NOS CONECTAMOS A UNA API QUE ES UN PUENTE CON LA INFORMACION 
+  DE UN SERVIDOR Y ESE SERVIDOR NOS DEVUELVE ESA INFORMACION, Y UTILIZAMOS
+  UN CICLO POR CADA UNO DE LOS ELEMENTOS QUE NOS DEVUELVE ESE SERVIDOR
+  CREAMOS NODOS Y SE LOS AGREGAMOS AL FINAL A NUESTRO HTML*/
+
+/*RETO PARA MEJORAR ESTE CODIGO  Y ES HACERLO CON ASYNC Y AWAIT EN VES 
+  DE PROMESAS */```
+
+El fetch() con async/await
+
+const url = "https://platzi-avo.vercel.app/api/avo";
+
+//web api
+async function fetchData() {
+  const response = await fetch(url),
+  data = await response.json(),
+  allItems = [];
+
+  data.data.forEach((item) => {
+    // create image
+    const image = document.createElement("img");
+    // create title
+    const title = document.createElement("h2");
+    // create price
+    const price = document.createElement("div");
+
+    const container = document.createElement("div");
+    container.append(image, title, price);
+
+    allItems.push(container);
+  });
+
+  document.body.append(...allItems)
+}
+
+fetchData();
+
+*********************************** 
+Enriqueciendo la información
+
+const appNode = document.querySelector('#app');
+//const url = "https://platzi-avo.vercel.app/api/avo";
+
+/* Cambiamos la url que tenemos por una url base
+y lo que hacemos es agregarle atraves de  un template string
+el resto de la url que teniamos en el fetch*/
+
+
+window
+    .fetch(`${baseUrl}/api/avo`)
+    .then(respuesta => respuesta.json())
+    .then(responseJson =>{
+
+        const todosLosItems = [];
+        responseJson.data.forEach(item => {
+        
+        const imagen = document.createElement('img');
+        /* Para asignar la url que obtenemos de la api
+        a nuestra imagen lo hacemos en la propiedad src
+
+        Si la agregaramos solo con lo que obtenemos de la API nos 
+        daria un error ya que lo que obtenemos es una ruta obsuluta
+        mas no una url por lo tanto nos dara error porque no
+        encontraria la ruta de la imagen
+        
+        */
+       imagen.src = `${baseUrl}${item.image}`;
+        
+    
+        const titulo = document.createElement('h2');
+        
+        titulo.textContent = item.name;
+
+       
+        const precio = document.createElement('div');
+
+        /* Le asignamos al texto del elemento precio que es un div
+           la informacion que obtenemos de respuesta JSON Y atraves
+           del parametro que tenemos en la funcion del forEach
+           accederemos al precio 
+        
+        */
+        precio.textContent = item.price;
+
+        const container = document.createElement('div');
+
+        container.append(imagen,titulo,precio);
+        
+     
+            todosLosItems.push(container);
+            
+                console.log(item.name);
+                
+            });
+    
+            appNode.append(...todosLosItems)
+    
+        });```
+Luego agregaremos en nuestro HTML una etiqueta div con un id para meter todos nuestros nodos dentro de el, generalmente se le llama mount o app o container.
+
+<div id="app"></div>
+
+Después vamos a nuestro javascript y agregamos nuestra etiqueta div con id app
+
+const appNode = document.querySelector('#app');
+
+y cambiamos la parte donde agregábamos todos los items al body
+
+appNode.append(...todosLosItems)
+
+*****************************
+La API de Internacionalización de ECMAScript
+
+Provee comparación de cadenas y formato de números, fechas y tiempos con sensibilidad al lenguaje.
+
+<h4>Propiedades</h4>
+Intl.Collator
+Constructor para collators, objetos que permiten la comparación de cadenas con sensibilidad al lenguaje.
+Intl.DateTimeFormat
+Constructor para objetos que permiten el formato de fecha y tiempos con sensibilidad al lenguaje.
+Intl.NumberFormat
+Constructor para objetos que permiten el formato de números con sensibilidad al lenguaje.
+
+***********************************
+
+Reaccionar a lo que sucede en el DOM
+
+La función addEventListener() nos permite añadir eventos a nuestros elementos, la podemos usar de la siguiente manera:
+
+miElemento.addEventListener("evento", manejador)
+En este caso, el manejador debe ser una función callback que se ejecutará cuando el evento sea disparado. Es muy común verlo como una función anónima:
+
+button.addEventListener("click", () => {
+	alert("Me has clickado 😄")
+})
+Sin embargo, la mejor práctica es crear funciones por separado, así siempre tendremos una referencia a dicha función (con una función anónima no tenemos nada que la identifique, de ahí su nombre)
+
+const miFuncionManejadora = () => {
+    alert("Me has clickado 😄")
+};
+
+button.addEventListener("click", miFuncionManejadora) // Presta atención como la estamos mandando sin paréntesis, porque de esa forma solo le pasamos la referencia de la función, si le pusieramos paréntesis entonces la estaríamos ejecutando
+
+Y esto tiene la ventaja de que podemos remover los eventos cuando queramos ya que tenemos la referencia de la función manejadora 😄
+
+const miFuncionManejadora = () => {
+    alert("Me has clickado 😄")
+};
+
+// Agrego el evento
+button.addEventListener("click", miFuncionManejadora)
+
+// Quito el evento
+button.removeEventListener("click", miFuncionManejadora)
+También podemos definir funciones de esta otra manera 👀
+
+button.onClick = () => {
+    alert("Me has clickado 😄")
+}
+Esta sintaxis es onEvento pero no es muy común ^^
+.
+Como dato adicional, esta es otra forma de añadir eventos desde HTML:
+.
+HTML
+
+<button onclick="miFuncionManejadora">Clicame</button>
+JavaScript
+
+const miFuncionManejadora = () => {
+    alert("Me has clickado 😄")
+};
+De esta forma, el botón, mediante un atributo estaría llamando a la función 😄
+
+************************************
+EVENT PROPAGATION
+
+<h4>Ideas/conceptos claves</h4>
+Bubbling es la forma en que se propaga desde lo más bajo hasta lo más alto
+
+<h4>Apuntes</h4>
+El DOM es un arbol que renderiza nodos de forma jerárquica
+Cuando un evento sucede se propaga a lo largo de ese nodo
+Los eventos suceden desde el elemento más interno hacia afuera
+Propagándose entre cada padre que tiene el elemento escuchado
+Si deseamos borrar este comportamiento podemos usar el parámetro de evento
+node.addEventListener("click", (event) => {
+	event.stopPropagation()
+	// Acciones ...
+});
+Se debe tener cuidado con este tipo de operaciones por que puede existir códigos de otras personas o de librerías que necesiten este tipo de eventos
+Por lo general se debería dejar que los eventos fluyan por su ruta
+RESUMEN: Cuando se tiene eventos estos pueden flotar desde el más específico hasta el más grande, si se desea quitar este comportamiento se puede usar el método del parámetro del evento stopPropagation por lo general no es necesario usar este método
+
++++++++++++++++++++++++++++++++++++++
+
+
+Básicamente la propagación de eventos se produce cuando tienes puestos algunos eventos en contenedores que son hijos de otro, por ejemplo:
+
+<div id="div1">
+    <div id="div2">
+        <div id="div3">
+            Hola
+        </div>
+    </div>
+</div>
+Si le ponemos un event listener a los 3 divs, y clicas dentro del div 3, también estás clicando el div2 (porque el div3 está dentro del div2), y a su vez estás clicando el div1 (porque estos 2 divs están dentro de div1), por tanto, el evento se va a propagar hacia los 3 divs.
+.
+La forma de deterlo es usando el método stopPropagation() que viene dentro del argumento event que cualquier evento nos provee, por tanto, yo puedo decirle al div3: “Oiga, yo solo lo quiero clicar a usted, no a los demás, sí, ya se que usted está dentro de los demás, pero yo solo lo quiero a usted”, de tal forma que al event listener del programation le puedo poner:
+
+div3.addEventListener("click", event => {
+
+    event.stopPropagation()
+
+});
+De esta forma, el evento de div2 y div1 no serán ejecutados
+.
+Dato curioso, cuando tu defines un elemento con un ID en HTML, en JavaScript se crea automágicamente una variable con ese id que creaste, por eso es completamente posible que yo pueda usar la variable div3 sin tener que seleccionar el elemento 
+
+************************************
+ Event delegation
+
+<h4>Apuntes</h4>
+La idea principal es delegar un evento global a un solo nodo y desde esa parte poder delegar todos los eventos que sucedan
+Se debe usar cuando el número de escuchadores es alto
+Se trata de identificar de donde proviene el evento, según a ello se lo captura con un condicional y se procede a realizar las operaciones
+RESUMEN: La técnica event delegation consiste en dejar todos los eventos sucedan en un elemento superior de tal forma que este los identifique y aplique el procedimiento con condicionales
+
++++++++++++++++++++++++++++++++++++++
+La delegación de eventos es básicamente un contenedor padre que le pasa el evento a todos sus hijos (en realidad no se los está pasando, sino que el contenedor padre sigue estando presente en todos los hijos, es por eso que cuando clicamos a un hijo el evento es disárado).
+.
+Entendiendo esto, cuando obtenemos el target podemos saber cuál elemento hijo del padre fue clicado, por tanto, con una simple condicional puede ver si el elemento clicado es el que yo quiero.
+
+Ojo: Eso no significa que el evento se quite de los demás elementos hijos, si tu clicas cualquier otro elemento hijo el evento se va a disparar sí o sí, pero lo que sucede es que la condición del tarjet no se cumple, por eso no hace nada.
+.
+Y sabiendo esto, puedes hacer cosas chulas como crear funciones que escuchen eventos dinámicamente, una característica de los eventos es que solo se le aplican a los elementos que están desde el inicio, pero si tu agregas otro nodo desde JavaScript los eventos no se van a escuchar para ese nuevo nodo. Entonces, una técnica que se suele usar es escuchar al padre (o en ocasiones a todo el document) y cada vez que el evento ocurra buscar a todos sus hijos que coincidan con el selector al que queremos aplicarle el evento, de esta forma no importa si los nodos se añaden posteriormente desde JavaScript, el evento será escuchado pues JavaScript directamente irá a buscar todos los nodos hijos que cumplan con dicho selector, por ejemplo:
+HTML
+
+<div id="divPadre">
+    <div class="div">
+        Hola
+    </div>
+</div>
+
+JavaScript
+
+document.querySelector(".div").addEventListener("click", () => {
+    // Hace algo
+})
+En este caso, si al div padre yo le añadiera desde JavaScript otro elemento con la clase div, el evento NO funcionaría:
+
+const nuevoDiv = document.createElement("div");
+nuevoDiv.className = "div";
+nuevoDiv.textContent = "Nuevo div"
+divPadre.append(nuevoDiv)
+Sin emabrgo, al usar la delegación de eventos, puedo escuchar al padre y buscar al hijo que me interesa:
+
+nuevoDiv.addEventListener("click", event => {
+
+    if(event.target.classList.contains("div")) {
+        // Código
+    }
+
+})
+De esta forma, no importa cuantos elementos nuevos agregues al padre desde JavaScript, esto siempre va a funcionar.
+.
+Ahora, si quieres hacer algo más pro, puedes crear una función en el cual tu le pases un selector en específico para usar dentro del div, así solo tienes que llamar a esa función y pasarle el selector de tal manera que se quede escuchando por cualquier elemento nuevo que sea agregado, algo así:
+
+eventAll("click", parentElement, elementToListen, () => {
+    // Has algo
+})
+Una función de ese tipo sería muy útil, porque así puedo mantener escuchando cada elemento, no importa que se agregue después con JavaScript.
+
+****************************
+
+Por si quiere probar con otra API o para futuros proyectos, Unsplash tiene una API para imágenes random: https://gersonlazaro.com/unsplash-api-miles-de-fotos-gratis-en-tu-sitio-web-o-aplicacion/
+
+Este link https://github.com/public-apis/public-apis tiene muchas apis para poder trabajar este taller y practicar.
+
+**********************************
+INTERSECTION OBSERVER
+
+El intersection Observer se va a encargar de obeservar un elemento
+indicado para realizar una acción cuando este sea visible. Para usarlo debemos instaciarlo y después usar sus metodos.
+-Recibe como parametro un call back, osea una función que va a ser llamada por el intersectionObeserver.
+
+.Observe recibe como parametro el elemento que se va a observar y como función inversa tiene .unObserve que recibe como parametro el elemento que se va a dejar de observar.
+**Ejemplos de uso: **
+
+-Como en el curso profesional de JS cuando un video ya no es visible para el usuario pausarlo.
+
+Cuando tenemos un carousel automatico pausarlo cuando el usuario no lo este viendo.
+Realizar una acción cuando el usuario pase un elemento X, como mostrar un modal o Alert
+-Por supuesto el ejemplo de este curso (Hacer Lazy loading), pero no solo con imagenes puede ser con videos, peticiones de datos, e incluso cargar una parte de tu sitio web que consideres que no es principal en tu web, pero incluirla de una en la pagina afectaria la carga de esta arruinando el UX
+
+***********************************
+
+Aplicando Lazy loading
+
+Los atributos data-cualquiercosa sirven para definir atributos personalizados dentro de HTML, es decir, puedes inventarte atributos, yo los he usado desde siempre porque son muy útiles para pasar datos entre HTML y JavaScript, su sintaxis consta en que SIEMPRE deben iniciar con data- y después de eso puedes poner cualquier cosa: data-este-es-un-atributo-data-personalizado, y se pueden usar de esta manera:
+
+<div id="myDiv" data-atributo="hola" data-un-atributo="el-valor-del-atributo">Hola 😄</div>
+
+De esta forma podemos tener atributos personalizados en HTML:
+.
+Atributos personalizados en HTML5, más datos con un simple “data-…”
+.
+La forma de acceder a estos elementos desde JavaScript es mediante la propiedad dataset, esta propiedad contiene la lista de todos los atributos personalizados que le pusiste a tu elemento:
+
+const atributo = myDiv.dataset.atributo; // hola
+Para los atributos que tienen más de un guion, JavaScript es inteligente y los convierte a camel case 🐫:
+
+const unAtributo = myDiv.dataset.unAtributo; // el-valor-del-atributo
+
+
+
+
+
+
+
+-->
